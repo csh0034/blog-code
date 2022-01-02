@@ -1,6 +1,5 @@
 package com.ask.springdownload.web;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
@@ -13,41 +12,33 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.ask.springdownload.util.FileUtils;
-
 @Controller
 public class DownloadController {
 
-	public static final String SAMPLE_FILE_NAME = "스프링.png";
+	private static final String SAMPLE_FILE_NAME = "스프링.png";
 
 	@Value("classpath:static/spring.png")
 	private Resource resource;
 
 	@GetMapping("/download/img")
-	public ResponseEntity<Resource> downloadImg() throws IOException {
-		File file = resource.getFile();
-
+	public ResponseEntity<Resource> downloadImg() {
 		return ResponseEntity.ok()
-			.header(HttpHeaders.CONTENT_TYPE, FileUtils.detectMediaType(file))
+			.contentType(MediaType.IMAGE_PNG)
 			.header(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition.inline()
 				.filename(SAMPLE_FILE_NAME, StandardCharsets.UTF_8)
 				.build()
 				.toString())
-			.header(HttpHeaders.CONTENT_LENGTH, String.valueOf(file.length()))
 			.body(resource);
 	}
 
 	@GetMapping("/download/file")
-	public ResponseEntity<Resource> downloadFile() throws IOException {
-		File file = resource.getFile();
-
+	public ResponseEntity<Resource> downloadFile() {
 		return ResponseEntity.ok()
-			.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
+			.contentType(MediaType.APPLICATION_OCTET_STREAM)
 			.header(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition.attachment()
 				.filename(SAMPLE_FILE_NAME, StandardCharsets.UTF_8)
 				.build()
 				.toString())
-			.header(HttpHeaders.CONTENT_LENGTH, String.valueOf(file.length()))
 			.body(resource);
 	}
 }
