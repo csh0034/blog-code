@@ -1,11 +1,15 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "2.6.2"
-    id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    kotlin("jvm") version "1.6.10"
-    kotlin("plugin.spring") version "1.6.10"
-    kotlin("kapt") version "1.6.0"
+    val springBootVersion = "2.6.2"
+    val dependencyManagementVersion = "1.0.11.RELEASE"
+    val kotlinVersion = "1.6.10"
+
+    id("org.springframework.boot") version springBootVersion
+    id("io.spring.dependency-management") version dependencyManagementVersion
+    kotlin("jvm") version kotlinVersion
+    kotlin("plugin.spring") version kotlinVersion
+    kotlin("kapt") version kotlinVersion
 }
 
 group = "com.ask"
@@ -24,7 +28,6 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.springframework.integration:spring-integration-mqtt")
     implementation("org.springframework.integration:spring-integration-jmx")
-    implementation("org.apache.commons:commons-text:1.9")
     kapt("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.integration:spring-integration-test")
