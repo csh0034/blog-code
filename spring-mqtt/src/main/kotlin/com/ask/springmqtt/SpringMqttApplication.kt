@@ -1,6 +1,8 @@
 package com.ask.springmqtt
 
+import com.ask.springmqtt.config.MqttConfig.MqttOutboundGateway
 import com.ask.springmqtt.config.MqttProperties
+import com.ask.springmqtt.mqtt.message.SampleMessage
 import com.ask.springmqtt.util.logger
 import org.springframework.boot.ApplicationRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -19,6 +21,11 @@ class SpringMqttApplication {
         log.info("=====================")
         log.info("$mqttProperties")
         log.info("=====================")
+    }
+
+    @Bean
+    fun sendSampleMessage(mqttOutboundGateway: MqttOutboundGateway) = ApplicationRunner() {
+        mqttOutboundGateway.publish(SampleMessage("title1", "message1"))
     }
 }
 
