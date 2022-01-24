@@ -1,12 +1,14 @@
 package com.ask.springamqp.config
 
+import com.ask.springamqp.amqp.handler.SampleMessageHandler
+import com.ask.springamqp.amqp.message.SampleMessage
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.amqp.rabbit.connection.ConnectionFactory
-import org.springframework.amqp.rabbit.core.RabbitTemplate
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.integration.amqp.dsl.Amqp
-import org.springframework.integration.annotation.Gateway
-import org.springframework.integration.annotation.MessagingGateway
 import org.springframework.integration.dsl.IntegrationFlow
 import org.springframework.integration.dsl.Transformers
 import org.springframework.integration.dsl.integrationFlow
@@ -14,35 +16,31 @@ import org.springframework.integration.dsl.integrationFlow
 @Configuration
 class AmqpConfig(
     private val connectionFactory: ConnectionFactory,
-    private val rabbitTemplate: RabbitTemplate
+    private val sampleMessageHandler: SampleMessageHandler,
+    private val objectMapper: ObjectMapper
 ) {
-
-    companion object {
-        const val SAMPLE_QUEUE = "sample.queue1"
-        const val AMQP_OUTBOUND_CHANNEL = "outboundChannel"
-    }
 
     @Bean
     fun amqpInboundFlow(): IntegrationFlow {
-        return integrationFlow(Amqp.inboundAdapter(connectionFactory, SAMPLE_QUEUE)) {
-            transform(Transformers.objectToString())
+        return integrationFlow(Amqp.inboundAdapter(messageListenerContainer())) {
+            transform(Transformers.fromJson(SampleMessage::class.java))
             handle {
-                println(it.payload)
+                sampleMessageHandler.handle(it.payload as SampleMessage)
             }
         }
     }
 
-    @Bean
-    fun amqpOutboundFlow(): IntegrationFlow {
-        return integrationFlow(AMQP_OUTBOUND_CHANNEL) {
-            handle(Amqp.outboundAdapter(rabbitTemplate).routingKey(SAMPLE_QUEUE))
+    private fun messageListenerContainer() = SimpleMessageListenerContainer(connectionFactory)
+        .apply {
+            setQueueNames(SAMPLE_QUEUE)
+            setPrefetchCount(1)
+            setDefaultRequeueRejected(true)
         }
-    }
 
-    @MessagingGateway(defaultRequestChannel = AMQP_OUTBOUND_CHANNEL)
-    interface AmqpOutboundGateway {
+    @Bean
+    fun jsonMessageConverter() = Jackson2JsonMessageConverter(objectMapper)
 
-        @Gateway
-        fun send(data: String)
+    companion object {
+        const val SAMPLE_QUEUE = "sample.queue1"
     }
 }
