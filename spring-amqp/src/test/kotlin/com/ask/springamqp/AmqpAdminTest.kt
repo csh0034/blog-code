@@ -2,15 +2,13 @@ package com.ask.springamqp
 
 import com.ask.springamqp.amqp.message.SampleMessage
 import com.ask.springamqp.util.logger
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.amqp.core.AmqpAdmin
 import org.springframework.amqp.core.AmqpTemplate
 import org.springframework.amqp.core.Queue
-import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.context.TestConfiguration
-import org.springframework.context.annotation.Bean
 
 @SpringBootTest
 class AmqpAdminTest @Autowired constructor(
@@ -18,27 +16,21 @@ class AmqpAdminTest @Autowired constructor(
     private val amqpTemplate: AmqpTemplate
 ) {
 
+    private val log = logger()
+
     @Test
     fun `queue test`() {
-        SampleMessage("테스트 제목", "테스트 내용")
-            .run {
-                amqpTemplate.convertAndSend(TEST_QUEUE, this)
-            }
+        amqpAdmin.declareQueue(Queue(TEST_QUEUE))
+
+        val message = SampleMessage("테스트 제목", "테스트 내용")
+        amqpTemplate.convertAndSend(TEST_QUEUE, message)
+
+        val receivedMessage = amqpTemplate.receiveAndConvert(TEST_QUEUE)
+        log.info("message $receivedMessage")
+
         amqpAdmin.deleteQueue(TEST_QUEUE)
-    }
 
-    @TestConfiguration
-    class TestConfig {
-
-        private val log = logger()
-
-        @Bean
-        fun testQueue() = Queue(TEST_QUEUE)
-
-        @RabbitListener(queues = [TEST_QUEUE])
-        fun handle(message: SampleMessage) {
-            log.info("test message arrived : $message")
-        }
+        assertThat(message).isEqualTo(receivedMessage)
     }
 
     companion object {
