@@ -9,8 +9,6 @@ spring:
     password:
 
   jpa:
-    hibernate:
-      ddl-auto: create
     properties:
       hibernate:
         show_sql: false
