@@ -129,7 +129,7 @@ class Company(
     var name: String,
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "company")
-    val users: Set<User> = hashSetOf()
+    val users: Set<User> = hashSetOf() // (1)
 
 ) {
     
@@ -151,6 +151,14 @@ class Company(
 
 }
 ```
+
+(1) 순서를 보장하지 않는 타입으로 초기화 타입을 지정하였습니다.  
+하단과 같이 선언하여도 무관합니다.
+
+```kotlin
+val users: MutableSet<User> = mutableSetOf()
+```
+
 
 ### User Entity
 
