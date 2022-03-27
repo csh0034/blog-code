@@ -264,7 +264,7 @@ internal class CompanyTest(
 
 - priority 필드값의 순서가 일치하지 않아 테스트가 실패합니다.
 
-![img.png](images/02.png)
+![02.png](images/02.png)
 
 ### 테스트 3
 
@@ -281,7 +281,7 @@ val users: Set<User> = hashSetOf()
 
 ![03.png](images/03.png)
 
-![img.png](images/04.png)
+![04.png](images/04.png)
 
 ## 5. Debugging
 
@@ -365,7 +365,7 @@ public class Set extends Collection {
 
 `org.hibernate.cfg.annotations.CollectionBinder`
 
-![img.png](images/05.png)
+![05.png](images/05.png)
 
 ## 6. 마무리
 
