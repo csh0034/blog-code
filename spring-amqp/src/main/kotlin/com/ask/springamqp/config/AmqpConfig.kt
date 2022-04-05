@@ -34,7 +34,7 @@ class AmqpConfig(
 
     private fun messageListenerContainer() = SimpleMessageListenerContainer(connectionFactory)
         .apply {
-            setQueueNames(SAMPLE_QUEUE)
+            setQueueNames(SAMPLE_QUEUE, SAMPLE_AUTO_DELETE_QUEUE)
             setPrefetchCount(1)
             setDefaultRequeueRejected(true)
         }
@@ -42,14 +42,27 @@ class AmqpConfig(
     @Bean
     fun sampleQueue(): Queue = QueueBuilder
         .durable(SAMPLE_QUEUE)
-//        .autoDelete()
-//        .exclusive()
+        .build()
+
+    @Bean
+    fun sampleAutoDeleteQueue(): Queue = QueueBuilder
+        .durable(SAMPLE_AUTO_DELETE_QUEUE)
+        .autoDelete()
+        .build()
+
+    @Bean
+    fun sampleExclusiveQueue(): Queue = QueueBuilder
+        .nonDurable(SAMPLE_EXCLUSIVE_QUEUE)
+        .exclusive()
         .build()
 
     @Bean
     fun jsonMessageConverter() = Jackson2JsonMessageConverter(objectMapper)
 
     companion object {
-        const val SAMPLE_QUEUE = "sample.queue10"
+        const val SAMPLE_QUEUE = "sample.queue"
+        const val SAMPLE_AUTO_DELETE_QUEUE = "sample.autoDelete"
+        const val SAMPLE_EXCLUSIVE_QUEUE = "sample.exclusive"
     }
+
 }
