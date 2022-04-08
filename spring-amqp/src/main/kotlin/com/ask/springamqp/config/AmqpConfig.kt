@@ -2,11 +2,13 @@ package com.ask.springamqp.config
 
 import com.ask.springamqp.amqp.handler.SampleMessageHandler
 import com.ask.springamqp.amqp.message.SampleMessage
+import com.ask.springamqp.util.logger
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.springframework.amqp.core.Queue
-import org.springframework.amqp.core.QueueBuilder
+import org.springframework.amqp.core.*
+import org.springframework.amqp.rabbit.config.RetryInterceptorBuilder
 import org.springframework.amqp.rabbit.connection.ConnectionFactory
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer
+import org.springframework.amqp.rabbit.retry.RejectAndDontRequeueRecoverer
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -22,9 +24,11 @@ class AmqpConfig(
     private val objectMapper: ObjectMapper
 ) {
 
+    private val log = logger()
+
     @Bean
     fun amqpInboundFlow(): IntegrationFlow {
-        return integrationFlow(Amqp.inboundAdapter(messageListenerContainer())) {
+        return integrationFlow(Amqp.inboundAdapter(messageListenerContainer(SAMPLE_QUEUE, SAMPLE_AUTO_DELETE_QUEUE))) {
             transform(Transformers.fromJson(SampleMessage::class.java))
             handle {
                 sampleMessageHandler.handle(it.payload as SampleMessage)
@@ -32,16 +36,34 @@ class AmqpConfig(
         }
     }
 
-    private fun messageListenerContainer() = SimpleMessageListenerContainer(connectionFactory)
+    @Bean
+    fun deadLetterInboundFlow(): IntegrationFlow {
+        return integrationFlow(Amqp.inboundAdapter(messageListenerContainer(SAMPLE_DEAD_LETTER_QUEUE))) {
+            handle {
+                log.info("dlq: $it")
+            }
+        }
+    }
+
+    private fun messageListenerContainer(vararg queueNames: String) = SimpleMessageListenerContainer(connectionFactory)
         .apply {
-            setQueueNames(SAMPLE_QUEUE, SAMPLE_AUTO_DELETE_QUEUE)
+            setQueueNames(*queueNames)
             setPrefetchCount(1)
-            setDefaultRequeueRejected(true)
+            setDefaultRequeueRejected(false)
+            setAdviceChain(
+                RetryInterceptorBuilder.stateless()
+                    .backOffOptions(1000, 2.0, 10000)
+                    .maxAttempts(5)
+                    .recoverer(RejectAndDontRequeueRecoverer())
+                    .build()
+            )
         }
 
     @Bean
     fun sampleQueue(): Queue = QueueBuilder
         .durable(SAMPLE_QUEUE)
+        .deadLetterRoutingKey(SAMPLE_DEAD_LETTER_QUEUE)
+        .deadLetterExchange("")
         .build()
 
     @Bean
@@ -57,12 +79,19 @@ class AmqpConfig(
         .build()
 
     @Bean
+    fun sampleDeadLetterQueue(): Queue = QueueBuilder
+        .durable(SAMPLE_DEAD_LETTER_QUEUE)
+        .autoDelete()
+        .build()
+
+    @Bean
     fun jsonMessageConverter() = Jackson2JsonMessageConverter(objectMapper)
 
     companion object {
         const val SAMPLE_QUEUE = "sample.queue"
         const val SAMPLE_AUTO_DELETE_QUEUE = "sample.autoDelete"
         const val SAMPLE_EXCLUSIVE_QUEUE = "sample.exclusive"
+        const val SAMPLE_DEAD_LETTER_QUEUE = "sample.deadLetter.queue"
     }
 
 }
