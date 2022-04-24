@@ -28,10 +28,6 @@ class MqttConfig(
     private val objectMapper: ObjectMapper,
 ) {
 
-    companion object {
-        const val MQTT_OUTBOUND_CHANNEL = "outboundChannel"
-    }
-
     @Bean
     fun mqttPahoClientFactory(): MqttPahoClientFactory {
         return DefaultMqttPahoClientFactory()
@@ -96,4 +92,9 @@ class MqttConfig(
         @Gateway
         fun publish(data: SampleMessage)
     }
+
+    companion object {
+        const val MQTT_OUTBOUND_CHANNEL = "outboundChannel"
+    }
+
 }
