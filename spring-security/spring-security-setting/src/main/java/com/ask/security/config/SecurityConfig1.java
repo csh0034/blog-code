@@ -14,18 +14,18 @@ public class SecurityConfig1 extends WebSecurityConfigurerAdapter {
   }
 
   @Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable()
-			.headers()
-				.frameOptions().disable().and()
-			.authorizeRequests()
-				.antMatchers("/user/**").hasRole("USER")
-				.anyRequest().authenticated().and()
-			.formLogin()
-				.loginPage("/user/login").permitAll()
-				.defaultSuccessUrl("/index").and()
-			.logout()
-				.logoutUrl("/user/logout");
-	}
+  protected void configure(HttpSecurity http) throws Exception {
+    http.csrf().disable()
+        .headers()
+          .frameOptions().disable().and()
+        .authorizeRequests()
+          .antMatchers("/user/**").hasRole("USER")
+        .anyRequest().authenticated().and()
+          .formLogin()
+        .loginPage("/user/login").permitAll()
+          .defaultSuccessUrl("/index").and()
+        .logout()
+          .logoutUrl("/user/logout");
+  }
 
 }
