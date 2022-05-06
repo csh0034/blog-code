@@ -2,8 +2,11 @@
 
 ## 개요
 
-`@ConfigurationProperties` 를 사용할때 `@ConstructorBinding` 와 `Lombok` 을 사용하면  
+`@ConfigurationProperties` 를 사용할때 `@ConstructorBinding` 과 `Lombok` 을 사용하면  
 `metadata.json` 에 프로퍼티가 안생기는 이슈가 있음. Maven, Gradle 동일
+
+서버 실행 및 기능동작에는 영향이 없지만 IntelliJ 사용시  
+노란색으로 `Cannot resolve configuration property` 라는 warning 표시함
 
 medata.json
 - target/classes/META-INF/spring-configuration-metadata.json

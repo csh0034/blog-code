@@ -1,5 +1,5 @@
 custom:
-  content: "without lombok"
+  content: "content..."
 
-lombok:
-  content: "use lombok"
+custom2:
+  content: "content2..."
