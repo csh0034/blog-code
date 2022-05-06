@@ -1,0 +1,5 @@
+custom:
+  content: "without lombok"
+
+lombok:
+  content: "use lombok"
