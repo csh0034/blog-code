@@ -1,6 +1,7 @@
 package com.ask.properties;
 
 import com.ask.properties.config.Custom2Properties;
+import com.ask.properties.config.Custom3Properties;
 import com.ask.properties.config.CustomProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
@@ -19,8 +20,10 @@ public class SpringPropertiesApplication {
   }
 
   @Bean
-  public ApplicationRunner applicationRunner(CustomProperties customProperties, Custom2Properties custom2Properties) {
-    return args -> log.info("customProperties: {}, custom2Properties: {}", customProperties, custom2Properties);
+  public ApplicationRunner applicationRunner(CustomProperties customProperties, Custom2Properties custom2Properties,
+      Custom3Properties custom3Properties) {
+    return args -> log.info("customProperties: {}, custom2Properties: {}, custom3Properties: {}", customProperties,
+        custom2Properties, custom3Properties);
   }
 
 }

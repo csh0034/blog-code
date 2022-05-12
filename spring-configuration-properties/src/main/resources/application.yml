@@ -1,5 +1,10 @@
 custom:
-  content: "content..."
+  content: 'content...'
 
 custom2:
-  content: "content2..."
+  content: 'content2...'
+
+custom3:
+  content: 'content3...'
+  nested:
+    title: 'nested...'
