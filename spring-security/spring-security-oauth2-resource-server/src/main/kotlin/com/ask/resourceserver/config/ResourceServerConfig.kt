@@ -28,7 +28,7 @@ class ResourceServerConfig {
 
   @Bean
   fun jwtDecoder(): JwtDecoder {
-    val secretKey = SecretKeySpec("0123456789-0123456789-0123456789".toByteArray(), "HmacSHA256")
+    val secretKey = SecretKeySpec(JWT_SECRET_KEY.toByteArray(), "HmacSHA256")
     return NimbusJwtDecoder.withSecretKey(secretKey)
       .build()
   }
