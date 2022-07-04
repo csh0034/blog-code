@@ -5,7 +5,10 @@ import com.nimbusds.jose.jwk.source.ImmutableSecret
 import org.junit.jupiter.api.Test
 import org.slf4j.LoggerFactory
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm
-import org.springframework.security.oauth2.jwt.*
+import org.springframework.security.oauth2.jwt.JwsHeader
+import org.springframework.security.oauth2.jwt.JwtClaimsSet
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder
 import java.time.Instant
 
 internal class NimbusJwtEncoderTest {
