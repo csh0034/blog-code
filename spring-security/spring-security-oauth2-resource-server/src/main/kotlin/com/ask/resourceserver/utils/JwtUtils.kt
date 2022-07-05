@@ -8,19 +8,19 @@ import org.springframework.security.oauth2.jwt.JwtClaimsSet
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder
 import java.time.Instant
+import java.time.temporal.ChronoUnit
 
 private val jwtEncoder = NimbusJwtEncoder(ImmutableSecret(JWT_SECRET_KEY.toByteArray()))
 
-fun encode(subject: String, roles: Array<String>): String {
+fun generateJwt(subject: String, scopes: Array<String>, expiresAt: Instant = Instant.now().plus(1, ChronoUnit.HOURS)): String {
   val header = JwsHeader.with(MacAlgorithm.HS256)
     .type("JWT")
     .build()
 
   val claims = JwtClaimsSet.builder()
     .subject(subject)
-    .issuedAt(Instant.now())
-    .expiresAt(Instant.now().plusSeconds(3600))
-    .claim("scope", roles)
+    .expiresAt(expiresAt)
+    .claim("scope", scopes)
     .build()
 
   return jwtEncoder.encode(JwtEncoderParameters.from(header, claims)).tokenValue
