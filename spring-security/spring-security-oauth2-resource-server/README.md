@@ -319,10 +319,14 @@ internal class ResourceServerTest(
 }
 ```
 
+### 실행 결과
+
+![img.png](images/02.png)
+
 ## 4. 마무리
 
 블로그에 사용된 코드는 [GitHub](https://github.com/csh0034/blog-code/blob/master/spring-security/spring-security-oauth2-resource-server/README.md) 에서 확인 하실 수 있습니다.
 
 ## 5. 참조
 
--[Docs, OAuth 2.0 Resource Server JWT](https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/jwt.html)
+- [Docs, OAuth 2.0 Resource Server JWT](https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/jwt.html)
