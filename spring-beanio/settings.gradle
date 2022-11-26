@@ -1,0 +1,9 @@
+// jcenter.bintray.com ssl 인증서 이슈 발생시 추가
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+
+rootProject.name = 'spring-beanio'
