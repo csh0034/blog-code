@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<beanio xmlns="http://www.beanio.org/2012/03" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.beanio.org/2012/03 http://www.beanio.org/2012/03/mapping.xsd">
+  <stream name="request" format="fixedlength" strict="true">
+    <parser>
+      <property name="recordTerminator" value=""/>
+    </parser>
+    <record name="sms" class="com.ask.springbeanio.config.BeanIODto" maxOccurs="1">
+      <segment name="header" class="map" minOccurs="1" maxOccurs="1">
+        <field name="TX_CODE" length="15" justify="left" padding=" "/>
+        <field name="GUID" length="32" required="true" />
+        <field name="LENGTH" length="5" justify="right" padding="0" default="00000" type="int"/>
+      </segment>
+      <segment name="body" class="map" minOccurs="1" maxOccurs="1">
+        <field name="MESSAGE" length="10" justify="left" padding=" " />
+        <field name="TO" length="15" justify="left" padding=" "/>
+      </segment>
+      <field name="end" length="2" justify="left" padding=" " default="@@"/>
+    </record>
+  </stream>
+</beanio>
