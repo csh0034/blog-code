@@ -1,5 +1,8 @@
 package com.ask.springbeanio.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -35,6 +38,7 @@ class BeanIOUtilsIntegrationTest {
     String result = beanIOUtils.marshal(dto);
 
     // then
+    assertThat(result).hasSize(79);
     log.info("result: {}", result);
   }
 
@@ -47,6 +51,12 @@ class BeanIOUtilsIntegrationTest {
     BeanIODto dto = beanIOUtils.unmarshal(record);
 
     // then
+    assertAll(
+        () -> assertThat(dto).isNotNull(),
+        () -> assertThat(dto.getHeader()).hasSize(3),
+        () -> assertThat(dto.getBody()).hasSize(2),
+        () -> assertThat(dto.getEnd()).isEqualTo("@@")
+    );
     log.info("dto: {}", dto);
   }
 
